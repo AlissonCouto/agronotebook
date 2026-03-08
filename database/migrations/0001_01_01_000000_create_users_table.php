@@ -21,7 +21,7 @@ return new class extends Migration
                 'ADMIN',
                 'PRODUCER',
                 'TECHNICAL'
-            ]);
+            ])->default('ADMIN');
             $table->rememberToken();
             $table->timestamps();
         });
