@@ -6,16 +6,17 @@
 
     <div class="p-6 border-b">
         <h2 class="text-lg font-semibold text-gray-800">
-            Cadastrar Produto
+            Editar Produto
         </h2>
     </div>
 
     <form
         method="POST"
-        action="{{ route('products.store') }}"
+        action="{{ route('products.update', $product->id) }}"
         class="p-6 space-y-6">
 
         @csrf
+        @method('PUT')
 
         @include('layouts.products.partials.form')
 
@@ -33,7 +34,7 @@
                 type="submit"
                 class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg">
 
-                Salvar
+                Atualizar
 
             </button>
 

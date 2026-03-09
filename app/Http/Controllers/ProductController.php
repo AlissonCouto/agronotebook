@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DTO\Product\ProductStoreData;
+use App\DTO\Product\ProductUpdateData;
 use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\ActiveIngredient;
 use App\Models\Manufacturer;
 use App\Models\Product;
@@ -63,14 +65,29 @@ class ProductController extends Controller
             ->with('success', 'Produto cadastrado com sucesso.');
     }
 
-    public function edit()
+    public function edit($id)
     {
-        return "EDIT";
+        $product = Product::with('activeIngredients')->findOrFail($id);
+
+        return view('layouts.products.edit', [
+            'product' => $product,
+            'manufacturers' => Manufacturer::orderBy('name')->get(),
+            'activeIngredients' => ActiveIngredient::orderBy('name')->get(),
+        ]);
     }
 
-    public function update()
+    public function update(ProductUpdateRequest $request, $id)
     {
-        return "UPDATE";
+        $data = ProductUpdateData::fromRequest(
+            $request->validated(),
+            $id
+        );
+
+        $this->service->update($data);
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Produto atualizado com sucesso.');
     }
 
     public function destroy()
