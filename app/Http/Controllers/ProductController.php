@@ -6,7 +6,9 @@ use App\DTO\Product\ProductStoreData;
 use App\Http\Requests\ProductStoreRequest;
 use App\Models\ActiveIngredient;
 use App\Models\Manufacturer;
+use App\Models\Product;
 use App\Services\ProductService;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -18,9 +20,26 @@ class ProductController extends Controller
         $this->service = new ProductService();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return "INDEX";
+        $search = $request->search;
+
+        $products = Product::query()
+            ->with([
+                'manufacturer:id,name',
+                'activeIngredients:id,name'
+            ])
+            ->select([
+                'id',
+                'name',
+                'manufacturer_id'
+            ])
+            ->search($request->search)
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('layouts.products.index', compact('products'));
     }
 
     public function create()
@@ -42,5 +61,20 @@ class ProductController extends Controller
         return redirect()
             ->route('products.index')
             ->with('success', 'Produto cadastrado com sucesso.');
+    }
+
+    public function edit()
+    {
+        return "EDIT";
+    }
+
+    public function update()
+    {
+        return "UPDATE";
+    }
+
+    public function destroy()
+    {
+        return "DESTROY";
     }
 }

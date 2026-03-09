@@ -18,6 +18,9 @@ Route::middleware('auth')->group(function () {
     Route::get("/produtos", [ProductController::class, "index"])->name("products.index");
     Route::get("/produtos/novo", [ProductController::class, "create"])->name("products.create");
     Route::post("/produtos/novo", [ProductController::class, "store"])->name("products.store");
+    Route::get("/produtos/{id}", [ProductController::class, "edit"])->name("products.edit");
+    Route::put("/produtos/{id}", [ProductController::class, "update"])->name("products.update");
+    Route::delete("/produtos/{id}", [ProductController::class, "destroy"])->name("products.destroy");
 
     /* Rotas do Perfil de Usuário */
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

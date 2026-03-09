@@ -53,7 +53,7 @@
 
         </a>
 
-        <a href="/products"
+        <a href="/produtos"
             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 {{ request()->is('products*') ? 'bg-gray-100 font-medium' : '' }}">
 
             <i class="fas fa-box"></i>

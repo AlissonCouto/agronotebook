@@ -16,11 +16,6 @@
 
     <div class="flex items-center gap-6">
 
-        <input
-            type="text"
-            placeholder="Buscar..."
-            class="border rounded-lg px-3 py-1.5 text-sm" />
-
         <div class="flex items-center gap-2 text-sm text-gray-600">
             <span>{{ auth()->user()->name ?? 'Usuário' }}</span>
         </div>

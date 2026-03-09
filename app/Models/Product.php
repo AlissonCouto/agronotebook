@@ -11,6 +11,29 @@ class Product extends Model
         'manufacturer_id'
     ];
 
+    protected $with = [
+        'manufacturer'
+    ];
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->when($search, function ($query) use ($search) {
+
+            $query->where(function ($query) use ($search) {
+
+                $query->where('name', 'like', "%{$search}%")
+
+                    ->orWhereHas('manufacturer', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    })
+
+                    ->orWhereHas('activeIngredients', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        });
+    }
+
     public function manufacturer()
     {
         return $this->belongsTo(Manufacturer::class);
