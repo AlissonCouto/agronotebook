@@ -31,6 +31,44 @@
             @include('layouts.header')
 
             <main class="p-6 flex-1 overflow-y-auto">
+
+                <!-- Mensagens de notificação -->
+                @if(session('success'))
+
+                <div
+                    x-data
+                    x-init="
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        })
+    "></div>
+                @endif
+
+                @if(session('error'))
+
+                <div
+                    x-data
+                    x-init="
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: '{{ session('error') }}',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true
+        })
+    "></div>
+                @endif
+
+                <!-- Mensagens de notificação -->
+
                 @yield('content')
             </main>
 

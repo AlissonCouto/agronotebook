@@ -47,4 +47,18 @@ class ProductService
             return $product;
         });
     }
+
+    public function destroy(int $id): void
+    {
+        DB::transaction(function () use ($id) {
+
+            $product = Product::findOrFail($id);
+
+            // remove pivot
+            $product->activeIngredients()->detach();
+
+            // remove produto
+            $product->delete();
+        });
+    }
 }

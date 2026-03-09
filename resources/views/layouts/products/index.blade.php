@@ -1,3 +1,7 @@
+@php
+$direction = request('direction') === 'asc' ? 'desc' : 'asc';
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -24,9 +28,9 @@
                     value="{{ request('search') }}"
                     placeholder="Buscar..."
                     @input="
-        clearTimeout(timer);
-        timer = setTimeout(() => $el.form.submit(), 500);
-    "
+                    clearTimeout(timer);
+                    timer = setTimeout(() => $el.form.submit(), 500);
+                "
                     class="border rounded-l-lg px-3 py-2 text-sm" />
 
                 <button
@@ -59,15 +63,36 @@
 
                 <tr>
 
-                    <th class="text-left px-6 py-3">ID</th>
-                    <th class="text-left px-6 py-3">Nome</th>
-                    <th class="text-left px-6 py-3">Princípio ativo</th>
-                    <th class="text-left px-6 py-3">Fabricante</th>
-                    <th class="text-left px-6 py-3">Ações</th>
+                    <th class="text-left px-6 py-3">
+                        <a href="{{ route('products.index', ['sort' => 'id', 'direction' => $direction] + request()->query()) }}">
+                            ID
+                        </a>
+                    </th>
+
+                    <th class="text-left px-6 py-3">
+                        <a href="{{ route('products.index', ['sort' => 'name', 'direction' => $direction] + request()->query()) }}">
+                            Nome
+                        </a>
+                    </th>
+
+                    <th class="text-left px-6 py-3">
+                        Princípio ativo
+                    </th>
+
+                    <th class="text-left px-6 py-3">
+                        <a href="{{ route('products.index', ['sort' => 'manufacturer_id', 'direction' => $direction] + request()->query()) }}">
+                            Fabricante
+                        </a>
+                    </th>
+
+                    <th class="text-left px-6 py-3">
+                        Ações
+                    </th>
 
                 </tr>
 
             </thead>
+
 
             <tbody>
 
@@ -85,17 +110,29 @@
 
                     <td class="px-6 py-3">
 
-                        @foreach($product->activeIngredients as $ai)
+                        <div class="flex flex-wrap gap-1">
 
-                        <span>
-                            {{ $ai->name }}
-                        </span>
+                            @foreach($product->activeIngredients->take(3) as $ai)
 
-                        @if(!$loop->last)
-                        ,
-                        @endif
+                            <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded">
 
-                        @endforeach
+                                {{ $ai->name }}
+
+                            </span>
+
+                            @endforeach
+
+                            @if($product->activeIngredients->count() > 3)
+
+                            <span class="text-xs text-gray-500 px-1">
+
+                                +{{ $product->activeIngredients->count() - 3 }}
+
+                            </span>
+
+                            @endif
+
+                        </div>
 
                     </td>
 
@@ -116,7 +153,23 @@
                         <form
                             method="POST"
                             action="{{ route('products.destroy', $product->id) }}"
-                            onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                            x-data
+                            @submit.prevent="
+                            Swal.fire({
+                                title: 'Tem certeza?',
+                                text: 'Essa ação não poderá ser desfeita.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#dc2626',
+                                cancelButtonColor: '#6b7280',
+                                confirmButtonText: 'Sim, excluir',
+                                cancelButtonText: 'Cancelar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $el.submit()
+                                }
+                            })
+                        ">
 
                             @csrf
                             @method('DELETE')
@@ -150,8 +203,6 @@
         </table>
 
     </div>
-
-
 
     <div class="p-6 border-t">
 

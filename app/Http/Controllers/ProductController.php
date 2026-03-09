@@ -26,6 +26,9 @@ class ProductController extends Controller
     {
         $search = $request->search;
 
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+
         $products = Product::query()
             ->with([
                 'manufacturer:id,name',
@@ -36,8 +39,8 @@ class ProductController extends Controller
                 'name',
                 'manufacturer_id'
             ])
-            ->search($request->search)
-            ->orderByDesc('id')
+            ->search($search)
+            ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();
 
@@ -90,8 +93,12 @@ class ProductController extends Controller
             ->with('success', 'Produto atualizado com sucesso.');
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        return "DESTROY";
+        $this->service->destroy($id);
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Produto removido com sucesso.');
     }
 }
