@@ -17,7 +17,7 @@
 
         </a>
 
-        <a href="/farms"
+        <a href="/fazendas"
             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 {{ request()->is('farms*') ? 'bg-gray-100 font-medium' : '' }}">
 
             <i class="fas fa-map-marked-alt"></i>

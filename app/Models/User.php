@@ -46,4 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'farm_users'
+        )->withPivot('role');
+    }
 }

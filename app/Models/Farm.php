@@ -19,6 +19,14 @@ class Farm extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'farm_users'
+        )->withPivot('role');
+    }
+
     public function fields()
     {
         return $this->hasMany(Field::class);
