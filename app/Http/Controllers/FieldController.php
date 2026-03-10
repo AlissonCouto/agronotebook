@@ -28,13 +28,21 @@ class FieldController extends Controller
         $direction = $request->get('direction', 'desc');
 
         $fields = Field::query()
-            ->with(['farm:id,name'])
+            ->with('farm')
+
             ->whereHas('farm', function ($q) {
                 $q->where('user_id', auth()->id());
             })
+
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+
+                $query->where('name', 'like', "%{$search}%")
+
+                    ->orWhereHas('farm', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             })
+
             ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();

@@ -28,9 +28,12 @@ class FarmController extends Controller
 
         $farms = Farm::query()
             ->where('user_id', auth()->id())
+
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
             })
+
             ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();

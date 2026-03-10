@@ -28,13 +28,21 @@ class CropController extends Controller
         $direction = $request->get('direction', 'desc');
 
         $crops = Crop::query()
-            ->with(['field:id,name'])
+            ->with('field')
+
             ->whereHas('field.farm', function ($q) {
                 $q->where('user_id', auth()->id());
             })
+
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+
+                $query->where('name', 'like', "%{$search}%")
+
+                    ->orWhereHas('field', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             })
+
             ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();
