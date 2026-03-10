@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class FarmController extends Controller
 {
-    private FarmService $service;
+    private $service;
 
     public function __construct(FarmService $farmService)
     {

@@ -17,9 +17,9 @@ class ProductController extends Controller
 
     private $service;
 
-    public function __construct()
+    public function __construct(ProductService $productService)
     {
-        $this->service = new ProductService();
+        $this->service = $productService;
     }
 
     public function index(Request $request)
