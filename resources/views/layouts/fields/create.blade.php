@@ -4,7 +4,6 @@
 
 <div class="bg-white rounded-xl shadow-sm border w-full">
 
-    ```
     <div class="p-6 border-b">
         <h2 class="text-lg font-semibold text-gray-800">
             Cadastrar Talhão
@@ -41,7 +40,6 @@
         </div>
 
     </form>
-    ```
 
 </div>
 
