@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CropController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\FieldController;
@@ -40,6 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::get("/talhoes/{id}", [FieldController::class, "edit"])->name("fields.edit");
     Route::put("/talhoes/{id}", [FieldController::class, "update"])->name("fields.update");
     Route::delete("/talhoes/{id}", [FieldController::class, "destroy"])->name("fields.destroy");
+
+    /* CULTURAS */
+    Route::get("/culturas", [CropController::class, "index"])->name("crops.index");
+    Route::get("/culturas/novo", [CropController::class, "create"])->name("crops.create");
+    Route::post("/culturas/novo", [CropController::class, "store"])->name("crops.store");
+    Route::get("/culturas/{id}", [CropController::class, "edit"])->name("crops.edit");
+    Route::put("/culturas/{id}", [CropController::class, "update"])->name("crops.update");
+    Route::delete("/culturas/{id}", [CropController::class, "destroy"])->name("crops.destroy");
 
     /* Rotas do Perfil de Usuário */
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

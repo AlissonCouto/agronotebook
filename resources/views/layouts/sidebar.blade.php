@@ -35,7 +35,7 @@
 
         </a>
 
-        <a href="/crops"
+        <a href="/culturas"
             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 {{ request()->is('crops*') ? 'bg-gray-100 font-medium' : '' }}">
 
             <i class="fas fa-seedling"></i>
