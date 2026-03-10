@@ -4,6 +4,7 @@ use App\Http\Controllers\CropController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\FieldController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +50,26 @@ Route::middleware('auth')->group(function () {
     Route::get("/culturas/{id}", [CropController::class, "edit"])->name("crops.edit");
     Route::put("/culturas/{id}", [CropController::class, "update"])->name("crops.update");
     Route::delete("/culturas/{id}", [CropController::class, "destroy"])->name("crops.destroy");
+
+    /* APLICAÇÕES */
+
+    Route::get("/aplicacoes", [ApplicationController::class, "index"])
+        ->name("applications.index");
+
+    Route::get("/aplicacoes/novo", [ApplicationController::class, "create"])
+        ->name("applications.create");
+
+    Route::post("/aplicacoes/novo", [ApplicationController::class, "store"])
+        ->name("applications.store");
+
+    Route::get("/aplicacoes/{id}", [ApplicationController::class, "edit"])
+        ->name("applications.edit");
+
+    Route::put("/aplicacoes/{id}", [ApplicationController::class, "update"])
+        ->name("applications.update");
+
+    Route::delete("/aplicacoes/{id}", [ApplicationController::class, "destroy"])
+        ->name("applications.destroy");
 
     /* Rotas do Perfil de Usuário */
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
