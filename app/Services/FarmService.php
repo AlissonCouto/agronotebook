@@ -13,12 +13,19 @@ class FarmService
     {
         return DB::transaction(function () use ($data) {
 
+            $userId = auth()->id();
+
             $farm = Farm::create([
                 'name' => $data->name,
                 'description' => $data->description,
                 'location' => $data->location,
                 'total_area' => $data->totalArea,
-                'user_id' => auth()->id()
+                'user_id' => $userId
+            ]);
+
+            // Cria vínculo na pivot como OWNER
+            $farm->users()->attach($userId, [
+                'role' => 'OWNER'
             ]);
 
             return $farm;
