@@ -67,6 +67,24 @@
     "></div>
                 @endif
 
+                {{-- 🔥 NOVO: erros de validação --}}
+                @if ($errors->any())
+
+                <div
+                    x-data
+                    x-init="
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: `{!! implode(' - ', $errors->all()) !!}`,
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true
+        })
+    "></div>
+
+                @endif
                 <!-- Mensagens de notificação -->
 
                 @yield('content')

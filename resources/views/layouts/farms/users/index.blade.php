@@ -36,9 +36,9 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                     value="{{ request('search') }}"
                     placeholder="Buscar..."
                     @input="
-                    clearTimeout(timer);
-                    timer = setTimeout(() => $el.form.submit(), 500);
-                "
+                        clearTimeout(timer);
+                        timer = setTimeout(() => $el.form.submit(), 500);
+                    "
                     class="border rounded-l-lg px-3 py-2 text-sm" />
 
                 <button
@@ -121,14 +121,15 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                     </td>
 
                     <td class="px-6 py-3">
-                        {{ UserRole::from($user->role)->label()}}
+                        {{ UserRole::from($user->role)->label() }}
                     </td>
 
                     <td class="px-6 py-3">
-                        {{ FarmRole::from($user->pivot->role)->label()}}
+                        {{ FarmRole::from($user->pivot->role)->label() }}
                     </td>
 
                     <td class="px-6 py-3 flex items-center gap-3">
+
                         <a href="{{ route('farms.users.edit', [$farm->id, $user->id]) }}"
                             class="text-blue-600 hover:underline text-xs">
                             Editar
@@ -139,21 +140,22 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                             action="{{ route('farms.users.destroy', [$farm->id, $user->id]) }}"
                             x-data
                             @submit.prevent="
-        Swal.fire({
-            title: 'Tem certeza?',
-            text: 'O usuário será removido da fazenda.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Sim, remover',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $el.submit()
-            }
-        })
-    ">
+                                Swal.fire({
+                                    title: 'Tem certeza?',
+                                    text: 'O usuário será removido da fazenda.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#dc2626',
+                                    cancelButtonColor: '#6b7280',
+                                    confirmButtonText: 'Sim, remover',
+                                    cancelButtonText: 'Cancelar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $el.submit()
+                                    }
+                                })
+                            ">
+
                             @csrf
                             @method('DELETE')
 
@@ -164,6 +166,7 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                             </button>
 
                         </form>
+
                     </td>
 
                 </tr>
