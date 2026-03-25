@@ -47,11 +47,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function users()
+    public function farms()
     {
         return $this->belongsToMany(
-            User::class,
+            Farm::class,
             'farm_users'
-        )->withPivot('role');
+        )->withPivot('role')->withTimestamps();
     }
 }

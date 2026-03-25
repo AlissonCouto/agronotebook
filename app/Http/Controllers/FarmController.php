@@ -123,8 +123,127 @@ class FarmController extends Controller
         return view('layouts.farms.users.index', compact('farm', 'users'));
     }
 
-    public function createUser()
+    public function createUser(Request $request, $farmId)
     {
-        return view('users.create');
+        $farm = Farm::findOrFail($farmId);
+
+        return view('layouts.farms.users.create')->with(compact('farm'));
+    }
+
+    public function storeUser(Request $request, $farmId)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'role' => 'required|in:OWNER,AGRONOMIST,EMPLOYEE,VIEWER',
+        ]);
+
+        $farm = Farm::findOrFail($farmId);
+
+        $user = User::where('email', $request->email)->first();
+
+        // evita duplicidade
+        if ($farm->users()->where('user_id', $user->id)->exists()) {
+            return back()->withErrors([
+                'email' => 'Usuário já está vinculado a esta fazenda.'
+            ]);
+        }
+
+        $farm->users()->attach($user->id, [
+            'role' => $request->role
+        ]);
+
+        return redirect()
+            ->route('farms.users', $farm->id)
+            ->with('success', 'Usuário adicionado com sucesso.');
+    }
+
+    public function editUser($farmId, $userId)
+    {
+        $farm = Farm::findOrFail($farmId);
+
+        $user = $farm->users()->where('users.id', $userId)->firstOrFail();
+
+        return view('layouts.farms.users.edit', compact('farm', 'user'));
+    }
+
+    public function updateUser(Request $request, $farmId, $userId)
+    {
+        $request->validate([
+            'role' => 'required|in:OWNER,AGRONOMIST,EMPLOYEE,VIEWER',
+        ]);
+
+        $farm = Farm::findOrFail($farmId);
+
+        $user = $farm->users()->where('users.id', $userId)->firstOrFail();
+
+        // regra: não deixar fazenda sem OWNER
+        if ($user->pivot->role === 'OWNER' && $request->role !== 'OWNER') {
+
+            $ownersCount = $farm->users()
+                ->wherePivot('role', 'OWNER')
+                ->count();
+
+            if ($ownersCount <= 1) {
+                return back()->withErrors([
+                    'role' => 'A fazenda precisa de pelo menos um OWNER.'
+                ]);
+            }
+        }
+
+        // opcional: evitar múltiplos OWNER
+        if ($request->role === 'OWNER') {
+            $hasOwner = $farm->users()
+                ->wherePivot('role', 'OWNER')
+                ->where('users.id', '!=', $userId)
+                ->exists();
+
+            if ($hasOwner) {
+                return back()->withErrors([
+                    'role' => 'Já existe um OWNER nesta fazenda.'
+                ]);
+            }
+        }
+
+        $farm->users()->updateExistingPivot($userId, [
+            'role' => $request->role
+        ]);
+
+        return redirect()
+            ->route('farms.users', $farmId)
+            ->with('success', 'Usuário atualizado com sucesso.');
+    }
+
+    public function destroyUser($farmId, $userId)
+    {
+        $farm = Farm::findOrFail($farmId);
+
+        $user = $farm->users()
+            ->where('users.id', $userId)
+            ->firstOrFail();
+
+        if ($user->pivot->role === 'OWNER') {
+
+            $ownersCount = $farm->users()
+                ->wherePivot('role', 'OWNER')
+                ->count();
+
+            if ($ownersCount <= 1) {
+                return back()->withErrors([
+                    'error' => 'A fazenda precisa de pelo menos um OWNER.'
+                ]);
+            }
+
+            if ($user->id === auth()->id() && $user->pivot->role === 'OWNER') {
+                return back()->withErrors([
+                    'error' => 'Você não pode remover a si mesmo como OWNER.'
+                ]);
+            }
+        }
+
+        $farm->users()->detach($userId);
+
+        return redirect()
+            ->route('farms.users', $farmId)
+            ->with('success', 'Usuário removido da fazenda.');
     }
 }

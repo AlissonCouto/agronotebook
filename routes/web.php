@@ -36,6 +36,14 @@ Route::middleware('auth')->group(function () {
     Route::delete("/fazendas/{id}", [FarmController::class, "destroy"])->name("farms.destroy");
     Route::get("/fazendas/{id}/usuarios", [FarmController::class, "users"])->name("farms.users");
     Route::get("/fazendas/{id}/usuarios/novo", [FarmController::class, "createUser"])->name("farms.users.create");
+    Route::post('/fazendas/{id}/usuarios/novo', [FarmController::class, 'storeUser'])
+        ->name('farms.users.store');
+    Route::get('/farms/{farm}/users/{user}/edit', [FarmController::class, 'editUser'])
+        ->name('farms.users.edit');
+    Route::put('/farms/{farm}/users/{user}', [FarmController::class, 'updateUser'])
+        ->name('farms.users.update');
+    Route::delete('/farms/{farm}/users/{user}', [FarmController::class, 'destroyUser'])
+        ->name('farms.users.destroy');
 
     /* TALHÕES */
     Route::get("/talhoes", [FieldController::class, "index"])->name("fields.index");

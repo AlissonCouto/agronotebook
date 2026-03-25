@@ -1,4 +1,7 @@
 @php
+use App\Enums\FarmRole;
+use App\Enums\UserRole;
+
 $direction = request('direction') === 'asc' ? 'desc' : 'asc';
 @endphp
 
@@ -118,16 +121,49 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                     </td>
 
                     <td class="px-6 py-3">
-                        {{ $user->role }}
+                        {{ UserRole::from($user->role)->label()}}
                     </td>
 
                     <td class="px-6 py-3">
-                        {{ $user->pivot_role }}
+                        {{ FarmRole::from($user->pivot->role)->label()}}
                     </td>
 
-                    <td class="px-6 py-3">
-                        <!-- depois você coloca remover / editar role -->
-                        -
+                    <td class="px-6 py-3 flex items-center gap-3">
+                        <a href="{{ route('farms.users.edit', [$farm->id, $user->id]) }}"
+                            class="text-blue-600 hover:underline text-xs">
+                            Editar
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{{ route('farms.users.destroy', [$farm->id, $user->id]) }}"
+                            x-data
+                            @submit.prevent="
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: 'O usuário será removido da fazenda.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Sim, remover',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $el.submit()
+            }
+        })
+    ">
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="text-red-600 hover:text-red-800 text-xs">
+                                <i class="fas fa-trash"></i>
+                            </button>
+
+                        </form>
                     </td>
 
                 </tr>
