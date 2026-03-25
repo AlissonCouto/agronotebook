@@ -88,6 +88,10 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                     </th>
 
                     <th class="text-left px-6 py-3">
+                        Usuários
+                    </th>
+
+                    <th class="text-left px-6 py-3">
                         Ações
                     </th>
 
@@ -115,6 +119,16 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
 
                     <td class="px-6 py-3">
                         {{ $farm->total_area }} ha
+                    </td>
+
+                    <td class="px-6 py-3">
+                        <a
+                            href="{{ route('farms.users', $farm->id) }}"
+                            class="text-green-600 hover:underline text-xs">
+
+                            <i class="fas fa-users"></i> &nbsp;&nbsp; Usuários
+
+                        </a>
                     </td>
 
                     <td class="px-6 py-3 flex items-center gap-3">

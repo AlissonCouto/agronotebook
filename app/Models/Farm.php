@@ -24,7 +24,8 @@ class Farm extends Model
         return $this->belongsToMany(
             User::class,
             'farm_users'
-        )->withPivot('role');
+        )->withPivot('role')
+            ->withTimestamps();
     }
 
     public function fields()

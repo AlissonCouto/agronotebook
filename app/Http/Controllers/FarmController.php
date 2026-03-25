@@ -8,6 +8,7 @@ use App\Services\FarmService;
 use App\Models\Farm;
 use App\DTO\Farm\FarmStoreData;
 use App\DTO\Farm\FarmUpdateData;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FarmController extends Controller
@@ -86,5 +87,44 @@ class FarmController extends Controller
         return redirect()
             ->route('farms.index')
             ->with('success', 'Fazenda removida com sucesso.');
+    }
+
+    public function users(Request $request, $farmId)
+    {
+        $search = $request->search;
+
+        $sort = $request->get('sort', 'users.id');
+        $direction = $request->get('direction', 'desc');
+
+        $allowedSorts = ['users.id', 'users.name', 'users.email'];
+
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'users.id';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'desc';
+        }
+
+        $farm = Farm::findOrFail($farmId);
+
+        $users = $farm->users()
+            ->select('users.*', 'farm_users.role as pivot_role')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('users.name', 'like', "%{$search}%")
+                        ->orWhere('users.email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('layouts.farms.users.index', compact('farm', 'users'));
+    }
+
+    public function createUser()
+    {
+        return view('users.create');
     }
 }
