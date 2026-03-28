@@ -121,11 +121,36 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                     </td>
 
                     <td class="px-6 py-3">
-                        {{ UserRole::from($user->role)->label() }}
+                        @php
+                        $role = $user->role;
+                        @endphp
+
+                        <span class="
+        px-2 py-1 text-xs font-semibold rounded
+        @if($role === 'ADMIN') bg-red-100 text-red-700
+        @elseif($role === 'PRODUCER') bg-green-100 text-green-700
+        @elseif($role === 'TECHNICAL') bg-indigo-100 text-indigo-700
+        @endif
+    ">
+                            {{ \App\Enums\UserRole::from($role)->label() }}
+                        </span>
                     </td>
 
                     <td class="px-6 py-3">
-                        {{ FarmRole::from($user->pivot->role)->label() }}
+                        @php
+                        $role = $user->pivot->role;
+                        @endphp
+
+                        <span class="
+    px-2 py-1 text-xs font-medium rounded-full
+    @if($role === 'OWNER') bg-purple-100 text-purple-700
+    @elseif($role === 'AGRONOMIST') bg-blue-100 text-blue-700
+    @elseif($role === 'EMPLOYEE') bg-yellow-100 text-yellow-700
+    @elseif($role === 'VIEWER') bg-gray-100 text-gray-600
+    @endif
+">
+                            {{ \App\Enums\FarmRole::from($role)->label() }}
+                        </span>
                     </td>
 
                     <td class="px-6 py-3 flex items-center gap-3">

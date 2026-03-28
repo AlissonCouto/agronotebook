@@ -1,4 +1,6 @@
 @php
+use App\Enums\FarmRole;
+
 $direction = request('direction') === 'asc' ? 'desc' : 'asc';
 @endphp
 
@@ -87,6 +89,8 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
                         </a>
                     </th>
 
+                    <th>Role</th>
+
                     <th class="text-left px-6 py-3">
                         Usuários
                     </th>
@@ -119,6 +123,24 @@ $direction = request('direction') === 'asc' ? 'desc' : 'asc';
 
                     <td class="px-6 py-3">
                         {{ $farm->total_area }} ha
+                    </td>
+
+                    <td>
+                        @php
+                        $role = $farm->pivot->role;
+
+                        @endphp
+
+                        <span class="
+    px-2 py-1 text-xs font-medium rounded-full
+    @if($role === 'OWNER') bg-purple-100 text-purple-700
+    @elseif($role === 'AGRONOMIST') bg-blue-100 text-blue-700
+    @elseif($role === 'EMPLOYEE') bg-yellow-100 text-yellow-700
+    @elseif($role === 'VIEWER') bg-gray-100 text-gray-600
+    @endif
+">
+                            {{ \App\Enums\FarmRole::from($role)->label() }}
+                        </span>
                     </td>
 
                     <td class="px-6 py-3">

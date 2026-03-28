@@ -27,14 +27,14 @@ class FarmController extends Controller
         $sort = $request->get('sort', 'id');
         $direction = $request->get('direction', 'desc');
 
-        $farms = Farm::query()
-            ->where('user_id', auth()->id())
-
+        $farms = auth()->user()
+            ->farms() // Pega só as fazendas vinculadas ao usuário
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('location', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('location', 'like', "%{$search}%");
+                });
             })
-
             ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();
